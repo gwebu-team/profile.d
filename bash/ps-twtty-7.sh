@@ -42,7 +42,7 @@ function prompt_command_exit() {
 	local Cmd="$(history 1)"
 	#Cmd=$(echo "$Cmd" | sed 's/^ *[[:digit:]][[:digit:]]* *//')
 	Cmd="${Cmd:7}"
-	echo -e "# Logout,$USER@${HOSTNAME}:$PWD,`tty`,${SSH_CLIENT:-`who am i | cut -d ' ' -f 1`@localhost},${my_LoginTime},$(date --rfc-3339=ns)\n$Cmd" >> "$HistFile"
+	echo -e "# Logout,$USER@${HOSTNAME}:$PWD,$(tty),${SSH_CLIENT:-$(who am i | cut -d ' ' -f 1)@localhost},${my_LoginTime},$(date --rfc-3339=ns)\n$Cmd" >> "$HistFile"
 }
 
 function prompt_command() {
@@ -58,12 +58,12 @@ function prompt_command() {
 	# Manage the history
 	if [ -z "$my_LoginTime" ]; then
 		my_LoginTime=$(date --rfc-3339=ns)
-		echo -e "# Login,$USER@${HOSTNAME}:$PWD,`tty`,${SSH_CLIENT:-`who am i | cut -d ' ' -f 1`@localhost},${my_LoginTime},${my_LoginTime}\n" >> "$HistFile"
+		echo -e "# Login,$USER@${HOSTNAME}:$PWD,$(tty),${SSH_CLIENT:-$(who am i | cut -d ' ' -f 1)@localhost},${my_LoginTime},${my_LoginTime}\n" >> "$HistFile"
 	else
 		local Cmd="$(history 1)"
 		#Cmd=$(echo "$Cmd" | sed 's/^ *[[:digit:]][[:digit:]]* *//')
 		Cmd="${Cmd:7}"
-		echo -e "# CMD,\$?=$E,$USER@${HOSTNAME}:$PWD,`tty`,${SSH_CLIENT:-`who am i | cut -d ' ' -f 1`@localhost},${my_LoginTime},$(date --rfc-3339=ns)\n$Cmd" >> "$HistFile"
+		echo -e "# CMD,\$?=$E,$USER@${HOSTNAME}:$PWD,$(tty),${SSH_CLIENT:-$(who am i | cut -d ' ' -f 1)@localhost},${my_LoginTime},$(date --rfc-3339=ns)\n$Cmd" >> "$HistFile"
 	fi
 
 
@@ -125,9 +125,8 @@ ${LIGHT_BLUE})${WHITE}\$${NO_COLOUR} "
 	PROMPT_COMMAND=prompt_command
 	trap prompt_command_exit EXIT
 	shopt -s cmdhist histappend
-	# unset HISTCONTROL
-	# makes MC add hundreds of commands into bash's history otherwize
-	export HISTIGNORE=' cd "`printf "%b": PROMPT_COMMAND='
+	export HISTCONTROL='ignorespace:erasedups'
+	export HISTIGNORE='history:history *'
 }
 
 twtty
