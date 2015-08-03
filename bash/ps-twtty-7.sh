@@ -1,6 +1,10 @@
 #!/bin/bash
 
 # ps-twtty-7.sh - Nice bash prompt and history archiver
+#   by Doncho Gunchev <dgunchev@gmail.com>, 2015-08-03 13:00 EET
+#   Change the root prompt colors
+
+# ps-twtty-7.sh - Nice bash prompt and history archiver
 #   by Doncho N. Gunchev <dgunchev@gmail.com>, 2011-11-10 12:12 EET
 #   fixed some variable quoting
 
@@ -101,6 +105,22 @@ function twtty {
 	local LIGHT_BLUE="\[\033[1;34m\]"
 	local YELLOW="\[\033[1;33m\]"
 
+	local RED="\[\033[0;31m\]"
+	local LIGHT_RED="\[\033[1;31m\]"
+
+	if [ "${UID}" -ne "0" ]; then
+		# Normal user colors
+		local C1="${YELLOW}"
+		local C2="${LIGHT_BLUE}"
+		local C3="${WHITE}"
+	else
+		# root user colors
+		local C1="${LIGHT_RED}"
+		local C2="${YELLOW}"
+		local C3="${WHITE}"
+	fi
+
+
 	case "$TERM" in
 		xterm*)
 			TITLEBAR='\[\033]0;\u@\h:\w\007\]'
@@ -111,17 +131,17 @@ function twtty {
 	esac
 
 	PS1="$TITLEBAR\
-${YELLOW}┌${LIGHT_BLUE}─(\
-${YELLOW}\${my_D}${LIGHT_BLUE}, ${YELLOW}Err ${WHITE}\$?${LIGHT_BLUE}, ${WHITE}\${my_TTY}\
-${LIGHT_BLUE})─${YELLOW}─\${my_FILL}${LIGHT_BLUE}─(\
-${YELLOW}\${my_PWD}\
-${LIGHT_BLUE})─${YELLOW}─\
+${C1}┌${C2}─(\
+${C1}\${my_D}${C2}, ${C1}Err ${C3}\$?${C2}, ${C3}\${my_TTY}\
+${C2})─${C1}─\${my_FILL}${C2}─(\
+${C1}\${my_PWD}\
+${C2})─${C1}─\
 ${NO_COLOUR}\n\
-${YELLOW}└${LIGHT_BLUE}─(\
-${YELLOW}\${USER}${LIGHT_BLUE}@${YELLOW}\${HOSTNAME%%.*}\
-${LIGHT_BLUE})${WHITE}\$${NO_COLOUR} "
+${C1}└${C2}─(\
+${C1}\${USER}${C2}@${C1}\${HOSTNAME%%.*}\
+${C2})${C3}\$${NO_COLOUR} "
 
-	PS2="${LIGHT_BLUE}─${YELLOW}─${YELLOW}─${NO_COLOUR} \[\033[K\]"
+	PS2="${C2}─${C1}─${C1}─${NO_COLOUR} \[\033[K\]"
 	PROMPT_COMMAND=prompt_command
 	trap prompt_command_exit EXIT
 	shopt -s cmdhist histappend
