@@ -108,10 +108,13 @@ function twtty {
 	local RED="\[\033[0;31m\]"
 	local LIGHT_RED="\[\033[1;31m\]"
 
+	local GREEN="\[\033[0;32m\]"
+	local LIGHT_GREEN="\[\033[1;32m\]"
+
 	if [ "${UID}" -ne "0" ]; then
 		# Normal user colors
-		local C1="${YELLOW}"
-		local C2="${LIGHT_BLUE}"
+		local C1="${GREEN}"
+		local C2="${LIGHT_GREEN}"
 		local C3="${WHITE}"
 	else
 		# root user colors
