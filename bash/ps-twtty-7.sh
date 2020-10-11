@@ -134,7 +134,7 @@ function twtty {
 			;;
 	esac
 
-	PS1="$TITLEBAR\
+	export PS1="$TITLEBAR\
 ${C1}┌${C2}─(\
 ${C1}\${my_D}${C2}, ${C1}Err ${C3}\$?${C2}, ${C3}\${my_TTY}\
 ${C2})─${C1}─\${my_FILL}${C2}─(\
@@ -145,8 +145,12 @@ ${C1}└${C2}─(\
 ${C1}\${USER}${C2}@${C1}\${HOSTNAME%%.*}\
 ${C2})${C3}\$${NO_COLOUR} "
 
-	PS2="${C2}─${C1}─${C1}─${NO_COLOUR} \[\033[K\]"
-	PROMPT_COMMAND=prompt_command
+	export PS2="${C2}─${C1}─${C1}─${NO_COLOUR} \[\033[K\]"
+	if [ -z "${PROMPT_COMMAND}" ]; then
+		export PROMPT_COMMAND=prompt_command
+	else
+		export PROMPT_COMMAND="${PROMPT_COMMAND}; prompt_command"
+	fi
 	trap prompt_command_exit EXIT
 	shopt -s cmdhist histappend
 	export HISTCONTROL='ignorespace:erasedups'
