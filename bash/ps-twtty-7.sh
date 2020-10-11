@@ -78,6 +78,7 @@ function prompt_command() {
 	local prompt="--($my_D, Err $E, $my_TTY)---($PWD)--"
 
 	local fillsize=0
+	#if [ -z "${COLUMNS}" ]; then COLUMNS=$(tput cols); fi
 	let fillsize=${COLUMNS}-${#prompt}
 	my_FILL=""
 	if [ $fillsize -gt 0 ]; then
