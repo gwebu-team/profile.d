@@ -1,6 +1,11 @@
 #!/bin/bash
 
 # ps-twtty-7.sh - Nice bash prompt and history archiver
+#   by Doncho Gunchev <dgunchev@gmail.com>, 2020-10-11 14:46 EET
+#   Integrate better with vte.sh, just name this in a way to sort after it.
+#   See https://bugzilla.redhat.com/show_bug.cgi?id=1183192
+
+# ps-twtty-7.sh - Nice bash prompt and history archiver
 #   by Doncho Gunchev <dgunchev@gmail.com>, 2015-08-03 13:00 EET
 #   Change the root prompt colors
 
