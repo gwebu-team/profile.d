@@ -154,7 +154,10 @@ ${C2})${C3}\$${NO_COLOUR} "
 	if [ -z "${PROMPT_COMMAND}" ]; then
 		export PROMPT_COMMAND=prompt_command
 	else
-		export PROMPT_COMMAND="${PROMPT_COMMAND}; prompt_command"
+		if ! echo "${PROMPT_COMMAND}" | grep '\bprompt_command\b' > /dev/null 2>&1; then
+			export PROMPT_COMMAND="prompt_command
+${PROMPT_COMMAND}"
+		fi
 	fi
 	trap prompt_command_exit EXIT
 	shopt -s cmdhist histappend
