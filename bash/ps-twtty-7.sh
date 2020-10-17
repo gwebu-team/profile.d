@@ -55,7 +55,7 @@ function prompt_command_exit() {
 }
 
 function prompt_command() {
-	# Save the error code
+	# Save the error code, running any external command resets it!
 	local E=$?
 
 	# Date, my format
@@ -87,7 +87,7 @@ function prompt_command() {
 	let fillsize=${COLUMNS}-${#prompt}
 	my_FILL=""
 	if [ $fillsize -gt 0 ]; then
-		my_FILL="─"
+		my_FILL="────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────"
 		while [ $fillsize -gt ${#my_FILL} ]; do
 			my_FILL="${my_FILL}${my_FILL}${my_FILL}${my_FILL}"
 		done
@@ -100,6 +100,8 @@ function prompt_command() {
 	else
 		my_PWD="${PWD}"
 	fi
+	# Let other PROMPT_COMMAND scripts (if any after us) have the error code too.
+	bash -c "exit $E"
 }
 
 function twtty {
