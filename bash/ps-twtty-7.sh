@@ -1,26 +1,5 @@
 #!/bin/bash
 
-# ps-twtty-7.sh - Nice bash prompt and history archiver
-#   by Doncho Gunchev <dgunchev@gmail.com>, 2020-10-11 14:46 EET
-#   Integrate better with vte.sh, just name this in a way to sort after it.
-#   See https://bugzilla.redhat.com/show_bug.cgi?id=1183192
-
-# ps-twtty-7.sh - Nice bash prompt and history archiver
-#   by Doncho Gunchev <dgunchev@gmail.com>, 2015-08-03 13:00 EET
-#   Change the root prompt colors
-
-# ps-twtty-7.sh - Nice bash prompt and history archiver
-#   by Doncho N. Gunchev <dgunchev@gmail.com>, 2011-11-10 12:12 EET
-#   fixed some variable quoting
-
-# ps-twtty-7.sh - Nice bash prompt and history archiver
-#   by Doncho N. Gunchev <dgunchev@gmail.com>, 2008-09-30 07:00 EEST
-
-# BASED ON
-# termwide prompt with tty number  and  .bashrc_history.sh
-# by Giles, 1998-11-02                  by Yaroslav Halchenko, 2005-03-10
-# .../Bash-Prompt-HOWTO/x869.html       http://www.onerussian.com
-
 # DESCRIPTION
 # An attempt to seese industrial... ops, I ment an attempt to make my
 # bash prompt nicer and save all my bash history ordered by date with
@@ -40,6 +19,27 @@
 #   this can be viewed as a feature too :-) The problem is that mc
 #   changes PROMPT_COMMAND, hurting the prompt quite bad and
 #   killing the log.
+
+# ps-twtty-7.sh - Nice bash prompt and history archiver
+#   by Doncho Gunchev <dgunchev@gmail.com>, 2020-10-11 14:46 EET
+#   Integrate better with vte.sh, just name this in a way to sort after it.
+#   See https://bugzilla.redhat.com/show_bug.cgi?id=1183192
+
+# ps-twtty-7.sh - Nice bash prompt and history archiver
+#   by Doncho Gunchev <dgunchev@gmail.com>, 2015-08-03 13:00 EET
+#   Change the root prompt colors
+
+# ps-twtty-7.sh - Nice bash prompt and history archiver
+#   by Doncho N. Gunchev <dgunchev@gmail.com>, 2011-11-10 12:12 EET
+#   fixed some variable quoting
+
+# ps-twtty-7.sh - Nice bash prompt and history archiver
+#   by Doncho N. Gunchev <dgunchev@gmail.com>, 2008-09-30 07:00 EEST
+
+# BASED ON
+# termwide prompt with tty number by Giles, 1998-11-02, https://tldp.org/HOWTO/Bash-Prompt-HOWTO/x869.html
+# and
+# .bashrc_history.sh by Yaroslav Halchenko, 2005-03-10, http://www.onerussian.com, https://debian-administration.org/article/175/BASH_history_forever.
 
 if [ "$PS1" ] ; then # interactive shell detection
 
