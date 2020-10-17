@@ -161,7 +161,14 @@ ${PROMPT_COMMAND}"
 	export HISTIGNORE='history:history *'
 }
 
+# Secure bash history
+if [ ! -d "$HOME/bash_history" ]; then
+    mkdir "$HOME/bash_history"
+    chmod 0700 "$HOME/bash_history"
+fi
+
 twtty
+
 unset twtty
 
 fi
