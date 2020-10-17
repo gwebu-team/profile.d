@@ -58,13 +58,10 @@ function prompt_command() {
 	# Save the error code, running any external command resets it!
 	local E=$?
 
-	# Date, my format
-	my_D="$(date '+%Y-%m-%d %H:%M:%S')"
-
+	# Manage the history
 	local HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
 	mkdir -p "${HistFile%/*}"
 
-	# Manage the history
 	if [ -z "$my_LoginTime" ]; then
 		my_LoginTime=$(date --rfc-3339=ns)
 		echo -e "# Login,$USER@${HOSTNAME}:$PWD,$(tty),${SSH_CLIENT:-$(who am i | cut -d ' ' -f 1)@localhost},${my_LoginTime},${my_LoginTime}\n" >> "$HistFile"
@@ -75,15 +72,15 @@ function prompt_command() {
 		echo -e "# CMD,\$?=$E,$USER@${HOSTNAME}:$PWD,$(tty),${SSH_CLIENT:-$(who am i | cut -d ' ' -f 1)@localhost},${my_LoginTime},$(date --rfc-3339=ns)\n$Cmd" >> "$HistFile"
 	fi
 
-
 	# Calculate the width of the prompt:
 	my_TTY="$(tty)"
 	my_TTY="${my_TTY:5}"	# cut the '/dev' part -> tty/1, pts/2...
+	my_PWD="${PWD}"
 	# Add all the accessories below ...
+	my_D="$(date '+%Y-%m-%d %H:%M:%S')"
 	local prompt="--($my_D, Err $E, $my_TTY)---($PWD)--"
-
 	local fillsize=0
-	#if [ -z "${COLUMNS}" ]; then COLUMNS=$(tput cols); fi
+	[ -z "${COLUMNS}" ] && COLUMNS=$(tput cols)
 	let fillsize=${COLUMNS}-${#prompt}
 	my_FILL=""
 	if [ $fillsize -gt 0 ]; then
@@ -92,13 +89,10 @@ function prompt_command() {
 			my_FILL="${my_FILL}${my_FILL}${my_FILL}${my_FILL}"
 		done
 		my_FILL="${my_FILL::$fillsize}"
-		let fillsize=0
 	fi
 
 	if [ $fillsize -lt 0 ]; then
-		my_PWD="...${PWD:3-$fillsize}"
-	else
-		my_PWD="${PWD}"
+		my_PWD="…${my_PWD:1-$fillsize}"
 	fi
 	# Let other PROMPT_COMMAND scripts (if any after us) have the error code too.
 	bash -c "exit $E"
