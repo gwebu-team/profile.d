@@ -152,10 +152,10 @@ ${C2})${C3}\$${NO_COLOUR} "
 
     export PS2="${C2}─${C1}─${C1}─${NO_COLOUR} \[\033[K\]"
     if [ -z "${PROMPT_COMMAND}" ]; then
-        export PROMPT_COMMAND=prompt_command
+        PROMPT_COMMAND=prompt_command
     else
         if ! echo "${PROMPT_COMMAND}" | grep '\bprompt_command\b' > /dev/null 2>&1; then
-            export PROMPT_COMMAND="prompt_command
+            PROMPT_COMMAND="prompt_command
 ${PROMPT_COMMAND}"
         fi
     fi
