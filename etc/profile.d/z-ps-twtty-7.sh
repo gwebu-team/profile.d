@@ -1,5 +1,3 @@
-#!/bin/bash
-
 # DESCRIPTION
 # ===========
 # An attempt to seize industrial… ops, I ment an attempt to make my
