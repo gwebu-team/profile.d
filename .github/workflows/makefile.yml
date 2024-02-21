@@ -1,0 +1,51 @@
+name: Makefile CI
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    container: rockylinux:9
+
+    steps:
+      - name: Install needed packages
+        run: |
+          dnf -y install rpmdevtools make xz tar bash git
+          # one time fix to avoid permission problems later on
+          git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      # Checks-out the repository under $GITHUB_WORKSPACE.
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup RPM build environment
+        run: rpmdev-setuptree
+
+      - name: List all files here
+        run: ls -al
+
+      - name: Show GITHUB_WORKSPACE
+        run: echo "$GITHUB_WORKSPACE"
+
+      - name: List GITHUB_WORKSPACE
+        run: ls -al "$GITHUB_WORKSPACE"
+
+      - name: List all files here
+        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
+
+      - name: Show the Makefile help screen
+        run: make
+
+      - name: Create source distribution tar.xz
+        run: make dist
+
+      - name: Create RPM packages
+        run: make rpm
+
+      - name: Clean up
+        run: make clean
