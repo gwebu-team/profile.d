@@ -1,0 +1,7 @@
+.gitattributes export-ignore
+.github export-ignore
+.gitignore export-ignore
+.pre-commit-config.yaml export-ignore
+changelog.sh export-ignore
+gwebu-profile.spec.in export-ignore
+Makefile export-ignore
