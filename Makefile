@@ -1,5 +1,5 @@
 SHELL:=/bin/bash # Use bash syntax, mitigates dash's printf on Debian
-ver:=$(shell git describe --tags --always --match='v[0-9]*.[0-9]*' | cut -c 2-)
+ver:=$(shell git describe --tags --always --match='v[0-9]*.[0-9]*' | cut -c 2- | cut -d - -f 1)
 
 
 help:
