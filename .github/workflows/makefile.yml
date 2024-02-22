@@ -26,18 +26,6 @@ jobs:
       - name: Setup RPM build environment
         run: rpmdev-setuptree
 
-      - name: List all files here
-        run: ls -al
-
-      - name: Show GITHUB_WORKSPACE
-        run: echo "$GITHUB_WORKSPACE"
-
-      - name: List GITHUB_WORKSPACE
-        run: ls -al "$GITHUB_WORKSPACE"
-
-      - name: List all files here
-        run: git config --global --add safe.directory "$GITHUB_WORKSPACE"
-
       - name: Show the Makefile help screen
         run: make
 
