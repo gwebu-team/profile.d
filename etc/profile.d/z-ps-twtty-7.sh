@@ -42,6 +42,11 @@
 #   - http://www.onerussian.com/Linux/bash_history.phtml
 #   - https://debian-administration.org/article/175/BASH_history_forever.
 
+if [ "${BASH_SOURCE-}" = "$0" ]; then
+    echo -e "You must source this script:\n\tsource $0" >&2
+    exit 33
+fi
+
 if [ "$PS1" ] ; then # interactive shell detection
 
 # Log the logout event.
