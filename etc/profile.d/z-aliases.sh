@@ -13,4 +13,10 @@ alias lll='ls -Al "--time-style=+%Y-%m-%d %H:%M:%S %4Z"'
 alias less='less -R'
 
 # color ip route
-alias ip='ip --color=auto'
+if ip -V | grep '^ip utility, iproute2-.*, libbpf' &>/dev/null; then
+    # EL 8+ - "ip utility, iproute2-6.2.0, libbpf 0.5.0"
+    alias ip='ip --color=auto'
+else
+    # EL 7 - "ip utility, iproute2-ss170501"
+    alias ip='ip -c'
+fi
