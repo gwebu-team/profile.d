@@ -10,19 +10,19 @@ if ! which ll 2>/dev/null; then
     alias ll='ls -l --color=auto'
 fi
 
-if [[ "$OSTYPE" != darwin* ]]; then
-    # long format with ISO dates
-    alias lll='ls -Al "--time-style=+%Y-%m-%d %H:%M:%S %4Z"'
-fi
-
 # color less (restricted)
 alias less='less -R'
 
-# color ip route
-if ip -V | grep '^ip utility, iproute2-.*, libbpf' &>/dev/null; then
-    # EL 8+ - "ip utility, iproute2-6.2.0, libbpf 0.5.0"
-    alias ip='ip --color=auto'
-else
-    # EL 7 - "ip utility, iproute2-ss170501"
-    alias ip='ip -c'
+if [[ "$OSTYPE" != darwin* ]]; then
+    # long format with ISO dates
+    alias lll='ls -Al "--time-style=+%Y-%m-%d %H:%M:%S %4Z"'
+
+    # color ip route
+    if ip -V | grep '^ip utility, iproute2-.*, libbpf' &>/dev/null; then
+        # EL 8+ - "ip utility, iproute2-6.2.0, libbpf 0.5.0"
+        alias ip='ip --color=auto'
+    else
+        # EL 7 - "ip utility, iproute2-ss170501"
+        alias ip='ip -c'
+    fi
 fi
