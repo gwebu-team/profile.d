@@ -6,8 +6,14 @@ fi
 # show hidden files and directories
 alias l.='ls -d .[^.]* ..?* --color=tty 2>/dev/null'
 
-# long format with ISO dates
-alias lll='ls -Al "--time-style=+%Y-%m-%d %H:%M:%S %4Z"'
+if ! which ll 2>/dev/null; then
+    alias ll='ls -l --color=auto'
+fi
+
+if [[ "$OSTYPE" != darwin* ]]; then
+    # long format with ISO dates
+    alias lll='ls -Al "--time-style=+%Y-%m-%d %H:%M:%S %4Z"'
+fi
 
 # color less (restricted)
 alias less='less -R'

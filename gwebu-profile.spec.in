@@ -1,6 +1,6 @@
 Summary: Gwebu profile.d - cool date, prompt with history, aliases
 Name: gwebu-profile
-Version: 1.0.1
+Version: 1.0.2
 Release: 0
 BuildArch: noarch
 License: GPLv2
@@ -41,6 +41,9 @@ install -m 0644 etc/profile.d/*.sh %{buildroot}%{_sysconfdir}/profile.d/
 
 
 %changelog
+* Fri Apr 26 2024 Doncho N. Gunchev <dgunchev@gmail.com> - 1.0.2-0
+- Let's be MacOS compatible.
+
 * Wed Apr 03 2024 Doncho N. Gunchev <dgunchev@gmail.com> - 1.0.1-0
 - Fix ip color on EL 7.
 

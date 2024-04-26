@@ -52,7 +52,7 @@ if [ "$PS1" ] ; then # interactive shell detection
 # Log the logout event.
 function prompt_command_exit() {
     trap - EXIT
-    local now=$(date --rfc-3339=ns)
+    local now=$(date --rfc-3339=ns 2> /dev/null || date -Iseconds)
     local HistFile
     HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
     mkdir -p "${HistFile%/*}"
@@ -61,7 +61,7 @@ function prompt_command_exit() {
 
 # Executed before each prompt. Fill the variables needed by PS1 here.
 function prompt_command() {
-    local now=$(date --rfc-3339=ns)
+    local now=$(date --rfc-3339=ns 2> /dev/null || date -Iseconds)
 
     # Manage the history
     local HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
