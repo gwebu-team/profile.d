@@ -28,5 +28,5 @@ if [[ "$OSTYPE" != darwin* ]]; then
 else
     # MacOS aliases
     alias ll='ls --color=auto -l'
-    alias lll='ls --color=auto -Al -D "+%Y-%m-%d %H:%M:%S %4Z"'
+    alias lll='ls --color=auto -Al -D "%Y-%m-%d %H:%M:%S %Z"'
 fi
