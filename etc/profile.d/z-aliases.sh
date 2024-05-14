@@ -15,7 +15,7 @@ alias less='less -R'
 
 if [[ "$OSTYPE" != darwin* ]]; then
     # long format with ISO dates
-    alias lll='ls -Al "--time-style=+%Y-%m-%d %H:%M:%S %4Z"'
+    alias lll='ls --color=auto -Al "--time-style=+%Y-%m-%d %H:%M:%S %4Z"'
 
     # color ip route
     if ip -V | grep '^ip utility, iproute2-.*, libbpf' &>/dev/null; then
@@ -25,4 +25,8 @@ if [[ "$OSTYPE" != darwin* ]]; then
         # EL 7 - "ip utility, iproute2-ss170501"
         alias ip='ip -c'
     fi
+else
+    # MacOS aliases
+    alias ll='ls --color=auto -l'
+    alias lll='ls --color=auto -Al -D "+%Y-%m-%d %H:%M:%S %4Z"'
 fi
