@@ -1,4 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+set -euo pipefail
+shopt -s nullglob dotglob
 
 ver=$(git describe --dirty --long --match='v[0-9]*.[0-9]*' | cut -c 2- | cut -d - -f 1,2,4)
 rpm_ver="${ver%%-*}"
@@ -14,3 +17,7 @@ awk -v change="${change}" '/^%changelog/ {print; print change; next} 1' gwebu-pr
 
 sed -i "s/Version: .*/Version: ${rpm_ver}/" gwebu-profile.spec.in
 sed -i "s/Release: .*/Release: ${rpm_numeric_rev}/" gwebu-profile.spec.in
+
+git add gwebu-profile.spec.in
+
+echo "gwebu-profile.spec.in changelog updated"
