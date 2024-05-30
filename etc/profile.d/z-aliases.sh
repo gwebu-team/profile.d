@@ -6,7 +6,7 @@ fi
 # show hidden files and directories
 alias l.='ls -d .[^.]* ..?* --color=tty 2>/dev/null'
 
-if ! which ll 2>/dev/null; then
+if ! which ll >/dev/null 2>&1; then
     alias ll='ls -l --color=auto'
 fi
 
