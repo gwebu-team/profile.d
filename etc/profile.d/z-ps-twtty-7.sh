@@ -77,8 +77,19 @@ function prompt_command() {
     my_PWD="${PWD}"
     # Add all the accessories below ...
     my_D="$(date '+%Y-%m-%d %H:%M:%S')"
-    # This is for string size calculations only.
+    # This is for string size calculations only. The variable my_P is set, see PROMPT_COMMAND below.
     local prompt="--($my_D, Err ${my_P[*]}, $my_TTY)---($PWD)--"
+
+    if [ -n "${VIRTUAL_ENV:-}" ] && [ -n "$_OLD_VIRTUAL_PS1" ]; then
+        my_VENV="${VIRTUAL_ENV_PROMPT}"
+        prompt="--($my_D, Err ${my_P[*]}, $my_TTY, $my_VENV)---($PWD)--"
+        if [ "${PS1:1:${#VIRTUAL_ENV_PROMPT}}" == "$VIRTUAL_ENV_PROMPT" ]; then
+            # PS1 will be restored by virtual environment's deactivate script.
+            # Yeah, that has to be done better, 172 is correct but magic number.
+            export PS1="${_OLD_VIRTUAL_PS1:0:172}, ${my_VENV}${_OLD_VIRTUAL_PS1:172}"
+        fi
+    fi
+
     local fill_size=0
     [ -z "${COLUMNS}" ] && COLUMNS=$(tput cols)
     ((fill_size=COLUMNS-${#prompt}))
@@ -157,7 +168,7 @@ ${C1}\${USER}${C2}@${C1}\${HOSTNAME%%.*}\
 ${C2})${C3}\$${NO_COLOUR} "
 
     export PS2="${C2}─${C1}─${C1}─${NO_COLOUR} \[\033[K\]"
-
+    # Set my_P to the exit codes of the last command pipe.
     local P='my_P=("${PIPESTATUS[@]}");prompt_command'
     if declare -p PROMPT_COMMAND &>/dev/null; then
         local re='^declare -a '
