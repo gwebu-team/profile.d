@@ -1,0 +1,14 @@
+FROM rockylinux:9 as build
+
+WORKDIR /root/profile.d
+
+COPY ./ .
+
+RUN \
+    dnf -y update && \
+    dnf -y install rpmdevtools make
+
+#    dnf -y install dnf-plugins-core epel-release && \
+#    /usr/bin/crb enable && \
+
+RUN ./build.sh

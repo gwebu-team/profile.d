@@ -47,3 +47,14 @@ changelog:
 .PHONY: clean
 clean:
 	rm -rf dist
+
+
+.PHONY: podman_rpm
+podman_rpm:
+	podman buildx build -t podman_rpm_build -f Dockerfile-build .  # --platform linux/amd64
+	# Extract the RPMs from the container to ./dist/ locally.
+	if ! test -d dist; then mkdir dist; fi
+	podman run --rm -d --name=build localhost/podman_rpm_build /usr/bin/bash -c "trap : TERM INT; sleep infinity & wait"
+	podman cp build:/tmp/RPMS/. ./dist/
+	podman stop build
+	podman image rm localhost/podman_rpm_build
