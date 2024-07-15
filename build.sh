@@ -13,7 +13,7 @@ DIST_PRE="${PLATFORM_ID##*:}" # el8
 DIST="${DIST:-${DIST_PRE%%[0-9]*}}" # el
 OUT_DIR="/tmp/RPMS"
 
-export LANG='en_US.UTF-8'
+export LANG='C.UTF-8'
 export LANGUAGE="${LANG}"
 export LC_ALL="${LANG}"
 export LC_MEASUREMENT="${LANG}"

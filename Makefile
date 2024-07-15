@@ -11,11 +11,12 @@ help:
 	@echo "▀▀▀▀▀▀"
 	@echo
 	@echo "Available targets:"
-	@echo "    dist:               create source distribution package in dist/"
-	@echo "    rpm:                create an RPM package"
-	@echo "    changelog:          Add a changelog entry to gwebu-profile.spec.in"
+	@echo "    dist:               Create source distribution package in dist/."
+	@echo "    rpm:                Create an RPM package."
+	@echo "    podman_rpm          Create an RPM package using podman on MacOS."
+	@echo "    changelog:          Add a changelog entry to gwebu-profile.spec.in."
 	@echo
-	@echo "    clean:              clean all generated files"
+	@echo "    clean:              Clean all generated files."
 	@echo
 	@echo "Version $(ver), rpm_ver=$(rpm_ver), rpm_rev=$(rpm_rev)."
 .PHONY: help
@@ -50,10 +51,9 @@ clean:
 
 
 .PHONY: podman_rpm
-podman_rpm:
+podman_rpm: dist
 	podman buildx build -t podman_rpm_build -f Dockerfile-build .  # --platform linux/amd64
 	# Extract the RPMs from the container to ./dist/ locally.
-	if ! test -d dist; then mkdir dist; fi
 	podman run --rm -d --name=build localhost/podman_rpm_build /usr/bin/bash -c "trap : TERM INT; sleep infinity & wait"
 	podman cp build:/tmp/RPMS/. ./dist/
 	podman stop build

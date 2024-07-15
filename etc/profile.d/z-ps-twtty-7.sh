@@ -81,9 +81,9 @@ function prompt_command() {
     local prompt="--($my_D, Err ${my_P[*]}, $my_TTY)---($PWD)--"
 
     if [ -n "${VIRTUAL_ENV:-}" ] && [ -n "$_OLD_VIRTUAL_PS1" ]; then
-        my_VENV="${VIRTUAL_ENV_PROMPT}"
+        export my_VENV="${VIRTUAL_ENV##*/}"
         prompt="--($my_D, Err ${my_P[*]}, $my_TTY, $my_VENV)---($PWD)--"
-        if [ "${PS1:1:${#VIRTUAL_ENV_PROMPT}}" == "$VIRTUAL_ENV_PROMPT" ]; then
+        if [ "${PS1:0:${#my_VENV}+3}" == "($my_VENV) " ]; then
             # PS1 will be restored by virtual environment's deactivate script.
             # Yeah, that has to be done better, 172 is correct but magic number.
             export PS1="${_OLD_VIRTUAL_PS1:0:172}, ${my_VENV}${_OLD_VIRTUAL_PS1:172}"
