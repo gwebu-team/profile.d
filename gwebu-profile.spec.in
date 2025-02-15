@@ -1,6 +1,6 @@
 Summary: Gwebu profile.d - cool date, prompt with history, aliases
 Name: gwebu-profile
-Version: 1.0.5
+Version: 1.0.6
 Release: 0
 BuildArch: noarch
 License: GPLv2
@@ -41,6 +41,9 @@ install -m 0644 etc/profile.d/*.sh %{buildroot}%{_sysconfdir}/profile.d/
 
 
 %changelog
+* Sat Feb 15 2025 Doncho Gunchev <doncho.gunchev@flyrlabs.com> - 1.0.6-0
+- Improve python virtual environment support (uv).
+
 * Wed Oct 16 2024 Doncho Gunchev <doncho.gunchev@flyrlabs.com> - 1.0.5-0
 - fix: Don't alias ip if iproute is not installed.
 
