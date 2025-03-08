@@ -81,7 +81,14 @@ function prompt_command() {
     local prompt="--($my_D, Err ${my_P[*]}, $my_TTY)---($PWD)--"
 
     if [ -n "${VIRTUAL_ENV:-}" ] && [ -n "$_OLD_VIRTUAL_PS1" ]; then
-        export my_VENV="${VIRTUAL_ENV##*/}"
+        if [ -n "$VIRTUAL_ENV_PROMPT" ]; then
+            my_VENV="${VIRTUAL_ENV_PROMPT%) }"
+            my_VENV="${my_VENV%) }"
+            export my_VENV="${my_VENV#(}"
+        else
+            # Best guess
+            export my_VENV="${VIRTUAL_ENV##*/}"
+        fi
         prompt="--($my_D, Err ${my_P[*]}, $my_TTY, $my_VENV)---($PWD)--"
         if [ "${PS1:0:${#my_VENV}+3}" == "($my_VENV) " ]; then
             # PS1 will be restored by virtual environment's deactivate script.

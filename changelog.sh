@@ -18,6 +18,6 @@ sed -i.bak "s/Version: .*/Version: ${rpm_ver}/" gwebu-profile.spec.in
 sed -i.bak "s/Release: .*/Release: ${rpm_numeric_rev}/" gwebu-profile.spec.in
 rm -f gwebu-profile.spec.in.bak
 
-git add gwebu-profile.spec.in
+# git add gwebu-profile.spec.in
 
 echo "gwebu-profile.spec.in changelog updated"
