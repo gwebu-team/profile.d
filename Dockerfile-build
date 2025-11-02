@@ -4,11 +4,13 @@ WORKDIR /root/profile.d
 
 COPY ./ .
 
+#    dnf -y update && \
 RUN \
-    dnf -y update && \
-    dnf -y install rpmdevtools make
+    dnf -y install rpmdevtools make && \
+    dnf -y clean all
 
 #    dnf -y install dnf-plugins-core epel-release && \
 #    /usr/bin/crb enable && \
+#    dnf -y clean all
 
 RUN ./build.sh
