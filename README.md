@@ -6,3 +6,5 @@ Unless explicitly stated in the file itself, the license is [The Unlicense](http
 ## Automation
 
 To update the RPM changelog run ./changelog.sh
+
+Type `make` to see the available targets (dist, rpm, podman_rpm, changelog, clean).

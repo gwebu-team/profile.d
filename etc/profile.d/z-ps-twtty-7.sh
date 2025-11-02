@@ -12,6 +12,10 @@
 #   59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 # z-ps-twtty-7.sh - Nice bash prompt and history archiver
+#   by Doncho Gunchev <dgunchev@gmail.com>, 2025-11-02 16:27:00 EET
+#   Improve python virtual environments support.
+#
+# z-ps-twtty-7.sh - Nice bash prompt and history archiver
 #   by Doncho Gunchev <dgunchev@gmail.com>, 2024-01-27 15:58 EET
 #   Show PIPESTATUS instead of just $?. Cleanup.
 #   Detect if BASH_COMMAND is an array (bash 5.1 NEWS) or just a string.
@@ -52,7 +56,8 @@ if [ "$PS1" ] ; then # interactive shell detection
 # Log the logout event.
 function prompt_command_exit() {
     trap - EXIT
-    local now=$(date --rfc-3339=ns 2> /dev/null || date -Iseconds)
+    local now
+    now=$(date --rfc-3339=ns 2> /dev/null || date -Iseconds)
     local HistFile
     HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
     mkdir -p "${HistFile%/*}"
@@ -61,10 +66,12 @@ function prompt_command_exit() {
 
 # Executed before each prompt. Fill the variables needed by PS1 here.
 function prompt_command() {
-    local now=$(date --rfc-3339=ns 2> /dev/null || date -Iseconds)
+    local now
+    now=$(date --rfc-3339=ns 2> /dev/null || date -Iseconds)
 
     # Manage the history
-    local HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
+    local HistFile
+    HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
     mkdir -p "${HistFile%/*}"
 
     if [ -z "$my_LoginTime" ]; then
@@ -78,23 +85,25 @@ function prompt_command() {
     # Add all the accessories below ...
     my_D="$(date '+%Y-%m-%d %H:%M:%S')"
     # This is for string size calculations only. The variable my_P is set, see PROMPT_COMMAND below.
+    if [ -z "$my_P" ]; then my_P="ERROR"; fi # make shellcheck happy.
     local prompt="--($my_D, Err ${my_P[*]}, $my_TTY)---($PWD)--"
 
     if [ -n "${VIRTUAL_ENV:-}" ] && [ -n "$_OLD_VIRTUAL_PS1" ]; then
         if [ -n "$VIRTUAL_ENV_PROMPT" ]; then
-            my_VENV="${VIRTUAL_ENV_PROMPT%) }"
-            my_VENV="${my_VENV%) }"
-            export my_VENV="${my_VENV#(}"
+            my_VENV="${VIRTUAL_ENV_PROMPT%\ }"
+            my_VENV="${my_VENV%\)}"
+            my_VENV="${my_VENV#\(}"
         else
             # Best guess
             export my_VENV="${VIRTUAL_ENV##*/}"
         fi
-        prompt="--($my_D, Err ${my_P[*]}, $my_TTY, $my_VENV)---($PWD)--"
-        if [ "${PS1:0:${#my_VENV}+3}" == "($my_VENV) " ]; then
-            # PS1 will be restored by virtual environment's deactivate script.
-            # Yeah, that has to be done better, 172 is correct but magic number.
-            export PS1="${_OLD_VIRTUAL_PS1:0:172}, ${my_VENV}${_OLD_VIRTUAL_PS1:172}"
-        fi
+        prompt="--($my_D, Err ${my_P[*]}, $my_TTY, Venv $my_VENV)---($PWD)--"
+        # local ps1_prefix
+        ps1_prefix="${_OLD_VIRTUAL_PS1%\$\{my_TTY\}*}\${my_TTY}"
+        ps1_suffix="${_OLD_VIRTUAL_PS1#"$ps1_prefix"}"
+        # The magic with numbers copies the comma with the colors around it.
+        export PS1="${ps1_prefix}${ps1_prefix:${#ps1_prefix}-39:30}\
+${ps1_prefix:${#ps1_prefix}-81:14}Venv${ps1_prefix:${#ps1_prefix}-63:14} ${my_VENV}${ps1_suffix}"
     fi
 
     local fill_size=0
@@ -114,7 +123,8 @@ function prompt_command() {
     fi
 
     local OldCmdNo="$CmdNo"  # See if we got new command later.
-    local Cmd="$(history 1)"
+    local Cmd
+    Cmd="$(history 1)"
     CmdNo="${Cmd:0:7}"
     if [[ -z "$OldCmdNo" ]]; then
         Cmd="login"
@@ -128,18 +138,28 @@ function prompt_command() {
 
 function twtty {
     # The special "\[" and "\]" are telling bash that the text enclosed will not move the caret.
+    # shellcheck disable=SC2034
     local GRAY='\[\033[1;30m\]'
+    # shellcheck disable=SC2034
     local LIGHT_GRAY='\[\033[0;37m\]'
+    # shellcheck disable=SC2034
     local WHITE='\[\033[1;37m\]'
+    # shellcheck disable=SC2034
     local NO_COLOUR='\[\033[0m\]'
 
+    # shellcheck disable=SC2034
     local LIGHT_BLUE='\[\033[1;34m\]'
+    # shellcheck disable=SC2034
     local YELLOW='\[\033[1;33m\]'
 
+    # shellcheck disable=SC2034
     local RED='\[\033[0;31m\]'
+    # shellcheck disable=SC2034
     local LIGHT_RED='\[\033[1;31m\]'
 
+    # shellcheck disable=SC2034
     local GREEN='\[\033[0;32m\]'
+    # shellcheck disable=SC2034
     local LIGHT_GREEN='\[\033[1;32m\]'
 
     if [ "${UID}" -ne '0' ]; then
@@ -176,15 +196,19 @@ ${C2})${C3}\$${NO_COLOUR} "
 
     export PS2="${C2}─${C1}─${C1}─${NO_COLOUR} \[\033[K\]"
     # Set my_P to the exit codes of the last command pipe.
+    # shellcheck disable=SC2016
     local P='my_P=("${PIPESTATUS[@]}");prompt_command'
     if declare -p PROMPT_COMMAND &>/dev/null; then
         local re='^declare -a '
         if [[ "$(declare -p PROMPT_COMMAND)" =~ $re ]]; then # Array, supported since bash 5.1
             PROMPT_COMMAND=("$P" "${PROMPT_COMMAND[@]}")
         else  # String
+            # shellcheck disable=SC2178
+            # shellcheck disable=SC2128
             PROMPT_COMMAND="$P;${PROMPT_COMMAND}"
         fi
     else
+        # shellcheck disable=SC2178
         PROMPT_COMMAND="$P"
     fi
     unset P
