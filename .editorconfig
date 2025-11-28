@@ -1,0 +1,27 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+[*]
+charset = utf-8
+end_of_line = lf
+# The POSIX standard requires the last line to end with a new line character.
+# All UNIX tools expect a new line at the end of files. Most text editors use this convention too.
+insert_final_newline = true
+trim_trailing_whitespace = true
+max_line_length = 120
+
+# Matches multiple files with brace expansion notation
+# Set default charset and 4 space indentation
+[*.{py,txt,md,rst,c,cxx,cpp,h,hpp,hxx,sh,cfg,ini}]
+indent_style = space
+indent_size = 4
+
+[*.{js,json,html,htm,xml,yaml,yml}]
+indent_style = space
+indent_size = 2
+
+# Tab indentation (no size specified)
+[{Makefile,*.go}]
+indent_style = tab
