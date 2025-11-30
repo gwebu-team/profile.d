@@ -20,3 +20,12 @@
 - **Licensing**: The Unlicense unless explicitly stated otherwise
 - **Indentation**: 4 spaces for shell scripts (see .editorconfig)
 - **Large Files**: Max 64KB (enforced by pre-commit)
+
+## Testing
+- No specific testing framework currently used
+- Shell scripts should be tested with basic manual verification
+- Use `set -euo pipefail` for robust error handling
+
+## Cursor/Copilot Rules
+- No specific .cursorrules or .github/copilot-instructions.md found
+- Follow standard shell script best practices
