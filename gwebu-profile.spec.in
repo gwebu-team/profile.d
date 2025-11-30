@@ -1,6 +1,6 @@
 Summary: Gwebu profile.d - cool date, prompt with history, aliases
 Name: gwebu-profile
-Version: 1.0.8
+Version: 1.0.9
 Release: 0
 BuildArch: noarch
 License: GPLv2
@@ -41,6 +41,9 @@ install -m 0644 etc/profile.d/*.sh %{buildroot}%{_sysconfdir}/profile.d/
 
 
 %changelog
+* Sun Nov 30 2025 Doncho N. Gunchev <dgunchev@gmail.com> - 1.0.9-0
+- Format the code, add fmt and check targets
+
 * Sun Nov 02 2025 Doncho N. Gunchev <dgunchev@gmail.com> - 1.0.8-0
 - Fixing VENV again...
 

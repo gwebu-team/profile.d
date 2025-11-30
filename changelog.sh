@@ -12,7 +12,7 @@ change1="* $(date +'%a %b %d %Y') $(git log -1 --format='%aN <%aE>') - ${rpm_ver
 change2="- $(git log -1 --format=%s)"
 
 awk -v change1="${change1}" -v change2="${change2}" '/^%changelog/ {print; print change1; print change2; print ""; next} 1' gwebu-profile.spec.in \
-    > gwebu-profile.spec.tmp && mv gwebu-profile.spec.tmp gwebu-profile.spec.in
+    >gwebu-profile.spec.tmp && mv gwebu-profile.spec.tmp gwebu-profile.spec.in
 
 sed -i.bak "s/Version: .*/Version: ${rpm_ver}/" gwebu-profile.spec.in
 sed -i.bak "s/Release: .*/Release: ${rpm_numeric_rev}/" gwebu-profile.spec.in

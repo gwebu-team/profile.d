@@ -51,140 +51,139 @@ if [ "${BASH_SOURCE-}" = "$0" ]; then
     exit 33
 fi
 
-if [ "$PS1" ] ; then # interactive shell detection
+if [ "$PS1" ]; then # interactive shell detection
 
-# Log the logout event.
-function prompt_command_exit() {
-    trap - EXIT
-    local now
-    now=$(date --rfc-3339=ns 2> /dev/null || date -Iseconds)
-    local HistFile
-    HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
-    mkdir -p "${HistFile%/*}"
-    echo -e "# Logout,$USER@${HOSTNAME}:$PWD,$(tty),${SSH_CLIENT:-local},login=${my_LoginTime:-$now},now=$now\nlogout" >> "$HistFile"
-}
+    # Log the logout event.
+    function prompt_command_exit() {
+        trap - EXIT
+        local now
+        now=$(date --rfc-3339=ns 2>/dev/null || date -Iseconds)
+        local HistFile
+        HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
+        mkdir -p "${HistFile%/*}"
+        echo -e "# Logout,$USER@${HOSTNAME}:$PWD,$(tty),${SSH_CLIENT:-local},login=${my_LoginTime:-$now},now=$now\nlogout" >>"$HistFile"
+    }
 
-# Executed before each prompt. Fill the variables needed by PS1 here.
-function prompt_command() {
-    local now
-    now=$(date --rfc-3339=ns 2> /dev/null || date -Iseconds)
+    # Executed before each prompt. Fill the variables needed by PS1 here.
+    function prompt_command() {
+        local now
+        now=$(date --rfc-3339=ns 2>/dev/null || date -Iseconds)
 
-    # Manage the history
-    local HistFile
-    HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
-    mkdir -p "${HistFile%/*}"
+        # Manage the history
+        local HistFile
+        HistFile="$HOME/bash_history/$(date '+%Y-%m/%Y-%m-%d')"
+        mkdir -p "${HistFile%/*}"
 
-    if [ -z "$my_LoginTime" ]; then
-        my_LoginTime="$now"
-    fi
-
-    # Calculate the width of the prompt:
-    my_TTY="$(tty)"
-    my_TTY="${my_TTY:5}" # cut the '/dev' part -> tty/1, pts/2...
-    my_PWD="${PWD}"
-    # Add all the accessories below ...
-    my_D="$(date '+%Y-%m-%d %H:%M:%S')"
-    # This is for string size calculations only. The variable my_P is set, see PROMPT_COMMAND below.
-    if [ -z "$my_P" ]; then my_P="ERROR"; fi # make shellcheck happy.
-    local prompt="--($my_D, Err ${my_P[*]}, $my_TTY)---($PWD)--"
-
-    if [ -n "${VIRTUAL_ENV:-}" ] && [ -n "$_OLD_VIRTUAL_PS1" ]; then
-        if [ -n "$VIRTUAL_ENV_PROMPT" ]; then
-            my_VENV="${VIRTUAL_ENV_PROMPT%\ }"
-            my_VENV="${my_VENV%\)}"
-            my_VENV="${my_VENV#\(}"
-        else
-            # Best guess
-            export my_VENV="${VIRTUAL_ENV##*/}"
+        if [ -z "$my_LoginTime" ]; then
+            my_LoginTime="$now"
         fi
-        prompt="--($my_D, Err ${my_P[*]}, $my_TTY, Venv $my_VENV)---($PWD)--"
-        # local ps1_prefix
-        ps1_prefix="${_OLD_VIRTUAL_PS1%\$\{my_TTY\}*}\${my_TTY}"
-        ps1_suffix="${_OLD_VIRTUAL_PS1#"$ps1_prefix"}"
-        # The magic with numbers copies the comma with the colors around it.
-        export PS1="${ps1_prefix}${ps1_prefix:${#ps1_prefix}-39:30}\
+
+        # Calculate the width of the prompt:
+        my_TTY="$(tty)"
+        my_TTY="${my_TTY:5}" # cut the '/dev' part -> tty/1, pts/2...
+        my_PWD="${PWD}"
+        # Add all the accessories below ...
+        my_D="$(date '+%Y-%m-%d %H:%M:%S')"
+        # This is for string size calculations only. The variable my_P is set, see PROMPT_COMMAND below.
+        if [ -z "$my_P" ]; then my_P="ERROR"; fi # make shellcheck happy.
+        local prompt="--($my_D, Err ${my_P[*]}, $my_TTY)---($PWD)--"
+
+        if [ -n "${VIRTUAL_ENV:-}" ] && [ -n "$_OLD_VIRTUAL_PS1" ]; then
+            if [ -n "$VIRTUAL_ENV_PROMPT" ]; then
+                my_VENV="${VIRTUAL_ENV_PROMPT%\ }"
+                my_VENV="${my_VENV%\)}"
+                my_VENV="${my_VENV#\(}"
+            else
+                # Best guess
+                export my_VENV="${VIRTUAL_ENV##*/}"
+            fi
+            prompt="--($my_D, Err ${my_P[*]}, $my_TTY, Venv $my_VENV)---($PWD)--"
+            # local ps1_prefix
+            ps1_prefix="${_OLD_VIRTUAL_PS1%\$\{my_TTY\}*}\${my_TTY}"
+            ps1_suffix="${_OLD_VIRTUAL_PS1#"$ps1_prefix"}"
+            # The magic with numbers copies the comma with the colors around it.
+            export PS1="${ps1_prefix}${ps1_prefix:${#ps1_prefix}-39:30}\
 ${ps1_prefix:${#ps1_prefix}-81:14}Venv${ps1_prefix:${#ps1_prefix}-63:14} ${my_VENV}${ps1_suffix}"
-    fi
+        fi
 
-    local fill_size=0
-    [ -z "${COLUMNS}" ] && COLUMNS=$(tput cols)
-    ((fill_size=COLUMNS-${#prompt}))
-    my_FILL=""
-    if [ "$fill_size" -gt 0 ]; then
-        my_FILL="────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────"
-        while [ "$fill_size" -gt ${#my_FILL} ]; do
-            my_FILL="${my_FILL}${my_FILL}${my_FILL}${my_FILL}"
-        done
-        my_FILL="${my_FILL::$fill_size}"
-    fi
+        local fill_size=0
+        [ -z "${COLUMNS}" ] && COLUMNS=$(tput cols)
+        ((fill_size = COLUMNS - ${#prompt}))
+        my_FILL=""
+        if [ "$fill_size" -gt 0 ]; then
+            my_FILL="────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────"
+            while [ "$fill_size" -gt ${#my_FILL} ]; do
+                my_FILL="${my_FILL}${my_FILL}${my_FILL}${my_FILL}"
+            done
+            my_FILL="${my_FILL::$fill_size}"
+        fi
 
-    if [ "$fill_size" -lt 0 ]; then
-        my_PWD="…${my_PWD:1-$fill_size}"
-    fi
+        if [ "$fill_size" -lt 0 ]; then
+            my_PWD="…${my_PWD:1-$fill_size}"
+        fi
 
-    local OldCmdNo="$CmdNo"  # See if we got new command later.
-    local Cmd
-    Cmd="$(history 1)"
-    CmdNo="${Cmd:0:7}"
-    if [[ -z "$OldCmdNo" ]]; then
-        Cmd="login"
-    else
-        Cmd="${Cmd:7}"
-    fi
-    if [ "$OldCmdNo" != "$CmdNo" ]; then # Only save new commands, not empty lines or Ctrl+C.
-        echo -e "# PIPESTATUS=${my_P[*]},$USER@${HOSTNAME}:$PWD,$(tty),${SSH_CLIENT:-local},login=$my_LoginTime,now=$now\n$Cmd" >> "$HistFile"
-    fi
-}
+        local OldCmdNo="$CmdNo" # See if we got new command later.
+        local Cmd
+        Cmd="$(history 1)"
+        CmdNo="${Cmd:0:7}"
+        if [[ -z "$OldCmdNo" ]]; then
+            Cmd="login"
+        else
+            Cmd="${Cmd:7}"
+        fi
+        if [ "$OldCmdNo" != "$CmdNo" ]; then # Only save new commands, not empty lines or Ctrl+C.
+            echo -e "# PIPESTATUS=${my_P[*]},$USER@${HOSTNAME}:$PWD,$(tty),${SSH_CLIENT:-local},login=$my_LoginTime,now=$now\n$Cmd" >>"$HistFile"
+        fi
+    }
 
-function twtty {
-    # The special "\[" and "\]" are telling bash that the text enclosed will not move the caret.
-    # shellcheck disable=SC2034
-    local GRAY='\[\033[1;30m\]'
-    # shellcheck disable=SC2034
-    local LIGHT_GRAY='\[\033[0;37m\]'
-    # shellcheck disable=SC2034
-    local WHITE='\[\033[1;37m\]'
-    # shellcheck disable=SC2034
-    local NO_COLOUR='\[\033[0m\]'
+    function twtty {
+        # The special "\[" and "\]" are telling bash that the text enclosed will not move the caret.
+        # shellcheck disable=SC2034
+        local GRAY='\[\033[1;30m\]'
+        # shellcheck disable=SC2034
+        local LIGHT_GRAY='\[\033[0;37m\]'
+        # shellcheck disable=SC2034
+        local WHITE='\[\033[1;37m\]'
+        # shellcheck disable=SC2034
+        local NO_COLOUR='\[\033[0m\]'
 
-    # shellcheck disable=SC2034
-    local LIGHT_BLUE='\[\033[1;34m\]'
-    # shellcheck disable=SC2034
-    local YELLOW='\[\033[1;33m\]'
+        # shellcheck disable=SC2034
+        local LIGHT_BLUE='\[\033[1;34m\]'
+        # shellcheck disable=SC2034
+        local YELLOW='\[\033[1;33m\]'
 
-    # shellcheck disable=SC2034
-    local RED='\[\033[0;31m\]'
-    # shellcheck disable=SC2034
-    local LIGHT_RED='\[\033[1;31m\]'
+        # shellcheck disable=SC2034
+        local RED='\[\033[0;31m\]'
+        # shellcheck disable=SC2034
+        local LIGHT_RED='\[\033[1;31m\]'
 
-    # shellcheck disable=SC2034
-    local GREEN='\[\033[0;32m\]'
-    # shellcheck disable=SC2034
-    local LIGHT_GREEN='\[\033[1;32m\]'
+        # shellcheck disable=SC2034
+        local GREEN='\[\033[0;32m\]'
+        # shellcheck disable=SC2034
+        local LIGHT_GREEN='\[\033[1;32m\]'
 
-    if [ "${UID}" -ne '0' ]; then
-        # Normal user colors
-        local C1="${GREEN}"
-        local C2="${LIGHT_GREEN}"
-        local C3="${WHITE}"
-    else
-        # root user colors
-        local C1="${LIGHT_RED}"
-        local C2="${YELLOW}"
-        local C3="${WHITE}"
-    fi
+        if [ "${UID}" -ne '0' ]; then
+            # Normal user colors
+            local C1="${GREEN}"
+            local C2="${LIGHT_GREEN}"
+            local C3="${WHITE}"
+        else
+            # root user colors
+            local C1="${LIGHT_RED}"
+            local C2="${YELLOW}"
+            local C3="${WHITE}"
+        fi
 
-    case "$TERM" in
-        xterm*)
-            TITLEBAR='\[\033]0;\u@\h:\w\007\]'
-            ;;
-        *)
-            TITLEBAR=''
-            ;;
-    esac
+        case "$TERM" in
+            xterm*)
+                TITLEBAR='\[\033]0;\u@\h:\w\007\]'
+                ;;
+            *)
+                TITLEBAR=''
+                ;;
+        esac
 
-    export PS1="$TITLEBAR\
-${C1}┌${C2}─(\
+        export PS1="$TITLEBAR${C1}┌${C2}─(\
 ${C1}\${my_D}${C2}, ${C1}Err ${C3}\${my_P[*]}${C2}, ${C3}\${my_TTY}\
 ${C2})─${C1}─\${my_FILL}${C2}─(\
 ${C1}\${my_PWD}\
@@ -194,37 +193,38 @@ ${C1}└${C2}─(\
 ${C1}\${USER}${C2}@${C1}\${HOSTNAME%%.*}\
 ${C2})${C3}\$${NO_COLOUR} "
 
-    export PS2="${C2}─${C1}─${C1}─${NO_COLOUR} \[\033[K\]"
-    # Set my_P to the exit codes of the last command pipe.
-    # shellcheck disable=SC2016
-    local P='my_P=("${PIPESTATUS[@]}");prompt_command'
-    if declare -p PROMPT_COMMAND &>/dev/null; then
-        local re='^declare -a '
-        if [[ "$(declare -p PROMPT_COMMAND)" =~ $re ]]; then # Array, supported since bash 5.1
-            PROMPT_COMMAND=("$P" "${PROMPT_COMMAND[@]}")
-        else  # String
+        export PS2="${C2}─${C1}─${C1}─${NO_COLOUR} \[\033[K\]"
+        # Set my_P to the exit codes of the last command pipe.
+        # shellcheck disable=SC2016
+        local P='my_P=("${PIPESTATUS[@]}");prompt_command'
+        if declare -p PROMPT_COMMAND &>/dev/null; then
+            local re='^declare -a '
+            if [[ "$(declare -p PROMPT_COMMAND)" =~ $re ]]; then # Array, supported since bash 5.1
+                PROMPT_COMMAND=("$P" "${PROMPT_COMMAND[@]}")
+            else # String
+                # shellcheck disable=SC2178
+                # shellcheck disable=SC2128
+                PROMPT_COMMAND="$P;${PROMPT_COMMAND}"
+            fi
+        else
             # shellcheck disable=SC2178
-            # shellcheck disable=SC2128
-            PROMPT_COMMAND="$P;${PROMPT_COMMAND}"
+            PROMPT_COMMAND="$P"
         fi
-    else
-        # shellcheck disable=SC2178
-        PROMPT_COMMAND="$P"
+        unset P
+
+        trap prompt_command_exit EXIT
+        shopt -s cmdhist histappend
+        export HISTCONTROL='ignorespace' # ':erasedups' would prevent logging duplicate commands.
+        export HISTIGNORE='history:history *'
+    }
+
+    # Secure bash history
+    if [ ! -d "$HOME/bash_history" ]; then
+        mkdir -m 0700 "$HOME/bash_history"
     fi
-    unset P
 
-    trap prompt_command_exit EXIT
-    shopt -s cmdhist histappend
-    export HISTCONTROL='ignorespace'  # ':erasedups' would prevent logging duplicate commands.
-    export HISTIGNORE='history:history *'
-}
-
-# Secure bash history
-if [ ! -d "$HOME/bash_history" ]; then
-    mkdir -m 0700 "$HOME/bash_history"
-fi
-
-# call and unset
-twtty; unset twtty
+    # call and unset
+    twtty
+    unset twtty
 
 fi

@@ -1,8 +1,8 @@
 SHELL:=/bin/bash # Use bash syntax, mitigates dash's printf on Debian
 ver:=$(shell git describe --dirty --long --match='v[0-9]*.[0-9]*' | cut -c 2- | cut -d - -f 1,2,4)
 rpm_ver:=$(firstword $(subst -, ,$(ver)))
-rpm_rev:=$(subst $(rpm_ver)-,,$(ver))
-rpm_rev:=$(subst -,_,$(rpm_rev))
+name_rev:=$(subst $(rpm_ver)-,,$(ver))
+rpm_rev:=$(subst -,_,$(name_rev))
 
 
 help:
@@ -15,6 +15,8 @@ help:
 	@echo "    rpm:                Create an RPM package."
 	@echo "    podman_rpm          Create an RPM package using podman on MacOS."
 	@echo "    changelog:          Add a changelog entry to gwebu-profile.spec.in."
+	@echo "    check:              Run shellcheck on all shell scripts."
+	@echo "    fmt:                Format all shell scripts with shfmt."
 	@echo
 	@echo "    clean:              Clean all generated files."
 	@echo
@@ -43,6 +45,17 @@ rpm: dist
 .PHONY: changelog
 changelog:
 	./changelog.sh
+
+
+.PHONY: check
+check:
+	shellcheck --shell=bash --external-sources --source-path=etc/profile.d *.sh etc/profile.d/*.sh
+	rpmlint *.spec.in
+
+
+.PHONY: fmt
+fmt:
+	shfmt -w -i 4 -ci *.sh etc/profile.d/*.sh
 
 
 .PHONY: clean

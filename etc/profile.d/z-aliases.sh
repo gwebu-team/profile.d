@@ -18,7 +18,7 @@ if [[ "$OSTYPE" != darwin* ]]; then
     alias lll='ls --color=auto -Al "--time-style=+%Y-%m-%d %H:%M:%S GMT%z"'
 
     # if there is iproute installed
-    if command -v ip > /dev/null; then
+    if command -v ip >/dev/null; then
         # color ip route
         if ip -V | grep '^ip utility, iproute2-.*, libbpf' &>/dev/null; then
             # EL 8+ - "ip utility, iproute2-6.2.0, libbpf 0.5.0"
